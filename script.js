@@ -177,35 +177,40 @@ function fechar() {
 // ------------------------
 // Reserva
 // ------------------------
-async function confirmar(){
+async function confirmar() {
 
-const nome=document.getElementById("nome").value.trim();
+  const nome = document.getElementById("nome").value.trim();
+  const anonimo = document.getElementById("anonimo").checked;
+  const mensagem = document.getElementById("mensagem").value.trim();
 
-const anonimo=document.getElementById("anonimo").checked;
+  if (!anonimo && nome === "") {
+    alert("Digite seu nome ou marque a opção de anonimato.");
+    return;
+  }
 
-const mensagem=document.getElementById("mensagem").value.trim();
+  const resposta = await fetch(API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      id: selecionado,
+      nome: nome,
+      anonimo: anonimo,
+      mensagem: mensagem
+    })
+  });
 
-if(!anonimo && nome===""){
-alert("Digite seu nome ou marque a opção de anonimato.");
-return;
-}
+  const resultado = await resposta.json();
 
-await fetch(API,{
-method:"POST",
-body:JSON.stringify({
-id:selecionado,
-nome:nome,
-anonimo:anonimo,
-mensagem:mensagem
-})
-});
+  if (!resultado.ok) {
+    alert(resultado.erro || "Erro ao reservar.");
+    return;
+  }
 
-fechar();
-
-carregar();
-
-mostrarSucesso();
-
+  fechar();
+  carregar();
+  mostrarSucesso();
 }
 
 // ------------------------
