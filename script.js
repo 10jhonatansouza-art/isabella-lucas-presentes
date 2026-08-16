@@ -189,23 +189,25 @@ async function confirmar() {
     return;
   }
 
-  const form = new FormData();
-  form.append("id", String(selecionado));
-  form.append("nome", nome);
-  form.append("anonimo", anonimo ? "SIM" : "NAO");
-  form.append("mensagem", mensagem);
+  const url = new URL(API);
 
-  await fetch(API, {
-    method: "POST",
-    body: form
-  });
+  url.searchParams.set("action", "reserve");
+  url.searchParams.set("id", selecionado);
+  url.searchParams.set("nome", nome);
+  url.searchParams.set("anonimo", anonimo ? "SIM" : "NAO");
+  url.searchParams.set("mensagem", mensagem);
+
+  const resposta = await fetch(url);
+  const resultado = await resposta.json();
+
+  if (!resultado.ok) {
+    alert(resultado.erro);
+    return;
+  }
 
   fechar();
-
-  setTimeout(() => {
-    carregar();
-    mostrarSucesso();
-  }, 500);
+  await carregar();
+  mostrarSucesso();
 }
 
 // ------------------------
