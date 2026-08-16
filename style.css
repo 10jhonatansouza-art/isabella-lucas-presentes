@@ -448,3 +448,17 @@ z-index:999;
 .toast.show{
 transform:translateX(-50%) translateY(0);
 }
+
+.anonimo-box{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:16px 0;
+    cursor:pointer;
+    font-weight:500;
+}
+
+.anonimo-box input{
+    width:18px;
+    height:18px;
+}

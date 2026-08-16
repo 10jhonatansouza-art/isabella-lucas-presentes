@@ -109,18 +109,16 @@ function filtrar() {
 // ------------------------
 function abrir(id){
 
-  selecionado=id;
+  selecionado = id;
 
-  const item=presentes.find(p=>p.id===id);
+  const item = presentes.find(i => i.id == id);
 
-  document.getElementById("presenteSelecionado").textContent=item.presente;
+  document.getElementById("presenteSelecionado").innerText = item.presente;
 
-  document.getElementById("nome").value="";
-  document.getElementById("mensagem").value="";
-  document.getElementById("anonimo").checked=false;
-  document.getElementById("contador").textContent="0";
+  document.getElementById("nome").value = "";
+  document.getElementById("anonimo").checked = false;
 
-  document.getElementById("modal").style.display="flex";
+  document.getElementById("modal").style.display = "flex";
 
 }
 
@@ -135,35 +133,34 @@ function fechar() {
 // ------------------------
 async function confirmar(){
 
-const nome=document.getElementById("nome").value.trim();
+  const nome = document.getElementById("nome").value.trim();
+  const anonimo = document.getElementById("anonimo").checked;
 
-const anonimo=document.getElementById("anonimo").checked;
+  if(!anonimo && nome === ""){
+    alert("Digite seu nome ou marque 'Reservar como anônimo'.");
+    return;
+  }
 
-const mensagem=document.getElementById("mensagem").value.trim();
+  const resposta = await fetch(API,{
+    method:"POST",
+    body: JSON.stringify({
+      id: selecionado,
+      nome: nome,
+      anonimo: anonimo
+    })
+  });
 
-if(!anonimo && nome===""){
-alert("Digite seu nome ou marque a opção de anonimato.");
-return;
+  const resultado = await resposta.json();
+
+  if(!resultado.ok){
+    alert(resultado.erro || "Erro ao reservar.");
+    return;
+  }
+
+  fechar();
+  carregar();
+
 }
-
-await fetch(API,{
-method:"POST",
-body:JSON.stringify({
-id:selecionado,
-nome:nome,
-anonimo:anonimo,
-mensagem:mensagem
-})
-});
-
-fechar();
-
-carregar();
-
-mostrarSucesso();
-
-}
-
 // ------------------------
 // Contagem regressiva
 // ------------------------
