@@ -6,46 +6,110 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Isabella & Lucas</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<header>
-  <h1>Isabella & Lucas</h1>
+  <section class="hero">
 
-  <p>
-    Criamos essa lista com muito carinho.
-    Escolha um presente disponível ❤️
-  </p>
-</header>
+    <div class="ornament">✦</div>
 
-<main id="lista"></main>
+    <h1>Isabella & Lucas</h1>
 
-<div id="modal" class="modal">
+    <p class="subtitle">
+      Lista de Presentes
+    </p>
 
-  <div class="janela">
+    <div class="date">
+      16 • Outubro • 2026
+    </div>
 
-    <h2>Reservar presente</h2>
+    <p class="message">
+      Criamos essa lista com muito carinho para dar um direcionamento a quem preferir.
+      O mais importante para nós é celebrar esse momento ao lado de vocês. ❤️
+    </p>
 
-    <p id="presenteSelecionado"></p>
+  </section>
 
-    <input
-      id="nome"
-      placeholder="Seu nome">
+  <section class="stats">
 
-    <button onclick="confirmar()">
-      Confirmar reserva
-    </button>
+    <div class="stat-card">
 
-    <button class="secundario" onclick="fechar()">
-      Cancelar
-    </button>
+      <div>
+        <span id="livres">0</span>
+        <small>Disponíveis</small>
+      </div>
+
+      <div class="divider"></div>
+
+      <div>
+        <span id="reservados">0</span>
+        <small>Reservados</small>
+      </div>
+
+    </div>
+
+  </section>
+
+  <main class="container">
+
+    <div class="search-box">
+
+      <input
+        type="text"
+        id="busca"
+        placeholder="Pesquisar presente..."
+        oninput="filtrar()">
+
+    </div>
+
+    <div id="lista"></div>
+
+  </main>
+
+  <footer>
+
+    <p>Com amor, Isabella & Lucas</p>
+
+    <small>Obrigado por fazer parte da nossa história.</small>
+
+  </footer>
+
+  <div id="modal" class="modal">
+
+    <div class="modal-content">
+
+      <h2>Reservar presente</h2>
+
+      <p id="presenteSelecionado"></p>
+
+      <input
+        id="nome"
+        type="text"
+        placeholder="Digite seu nome">
+
+      <div class="buttons">
+
+        <button class="secondary" onclick="fechar()">
+          Cancelar
+        </button>
+
+        <button onclick="confirmar()">
+          Confirmar
+        </button>
+
+      </div>
+
+    </div>
 
   </div>
 
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 
 </body>
 </html>
