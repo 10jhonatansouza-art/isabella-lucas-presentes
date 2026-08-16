@@ -1,6 +1,23 @@
 const API = "https://script.google.com/macros/s/AKfycbx2QDRO0EJYDcvPH_0JJPM8qk-wupvmkJSaDVYhm-8/exec";
 const livres = presentes.filter(p => p.status === "disponivel").length;
 const reservados = presentes.length - livres;
+const casamento = new Date("2026-10-16T00:00:00");
+
+function atualizarContagem() {
+
+    const agora = new Date();
+
+    const diff = casamento - agora;
+
+    const dias = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+    document.getElementById("countdown").innerHTML =
+        `Faltam <b>${dias}</b> dias para o grande dia`;
+}
+
+setInterval(atualizarContagem, 1000);
+
+atualizarContagem();
 
 document.getElementById("livres").textContent = livres;
 document.getElementById("reservados").textContent = reservados;
@@ -15,6 +32,10 @@ async function carregar() {
 }
 
 function desenhar() {
+    const livres = presentes.filter(p => p.status === "disponivel").length;
+
+    document.getElementById("livres").textContent = livres;
+    document.getElementById("reservados").textContent = presentes.length - livres;
     const lista = document.getElementById("lista");
     lista.innerHTML = "";
 
