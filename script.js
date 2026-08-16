@@ -107,15 +107,20 @@ function filtrar() {
 // ------------------------
 // Modal
 // ------------------------
-function abrir(id) {
+function abrir(id){
 
-  selecionado = id;
+  selecionado=id;
 
-  const item = presentes.find(p => p.id === id);
+  const item=presentes.find(p=>p.id===id);
 
-  document.getElementById("presenteSelecionado").textContent = item.presente;
+  document.getElementById("presenteSelecionado").textContent=item.presente;
 
-  document.getElementById("modal").style.display = "flex";
+  document.getElementById("nome").value="";
+  document.getElementById("mensagem").value="";
+  document.getElementById("anonimo").checked=false;
+  document.getElementById("contador").textContent="0";
+
+  document.getElementById("modal").style.display="flex";
 
 }
 
@@ -128,28 +133,34 @@ function fechar() {
 // ------------------------
 // Reserva
 // ------------------------
-async function confirmar() {
+async function confirmar(){
 
-  const nome = document.getElementById("nome").value.trim();
+const nome=document.getElementById("nome").value.trim();
 
-  if (!nome) {
-    alert("Digite seu nome.");
-    return;
-  }
+const anonimo=document.getElementById("anonimo").checked;
 
-  await fetch(API, {
-    method: "POST",
-    body: JSON.stringify({
-      id: selecionado,
-      nome: nome
-    })
-  });
+const mensagem=document.getElementById("mensagem").value.trim();
 
-  document.getElementById("nome").value = "";
+if(!anonimo && nome===""){
+alert("Digite seu nome ou marque a opção de anonimato.");
+return;
+}
 
-  fechar();
+await fetch(API,{
+method:"POST",
+body:JSON.stringify({
+id:selecionado,
+nome:nome,
+anonimo:anonimo,
+mensagem:mensagem
+})
+});
 
-  carregar();
+fechar();
+
+carregar();
+
+mostrarSucesso();
 
 }
 
@@ -172,5 +183,25 @@ function atualizarContagem() {
 atualizarContagem();
 setInterval(atualizarContagem, 60000);
 
+document.getElementById("mensagem")
+.addEventListener("input",e=>{
+
+document.getElementById("contador").textContent=
+e.target.value.length;
+
+});
+function mostrarSucesso(){
+
+const t=document.getElementById("toast");
+
+t.classList.add("show");
+
+setTimeout(()=>{
+
+t.classList.remove("show");
+
+},3000);
+
+}
 // Inicialização
 carregar();

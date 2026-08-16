@@ -96,31 +96,66 @@ oninput="filtrar()">
 
 <div id="modal" class="modal">
 
-<div class="modal-content">
+  <div class="modal-content">
 
-<h2>Reservar presente</h2>
+    <div class="modal-header">
 
-<p id="presenteSelecionado"></p>
+      <span class="mini">🎁 Lista de presentes</span>
 
-<input
-id="nome"
-type="text"
-placeholder="Digite seu nome">
+      <h2>Reservar presente</h2>
 
-<div class="buttons">
+      <h3 id="presenteSelecionado"></h3>
 
-<button class="secondary" onclick="fechar()">
-Cancelar
-</button>
+      <p>
+        Você pode se identificar ou deixar a reserva anônima.
+      </p>
 
-<button onclick="confirmar()">
-Confirmar reserva
-</button>
+    </div>
+
+    <label>Seu nome</label>
+
+    <input
+      id="nome"
+      type="text"
+      maxlength="60"
+      placeholder="Ex.: Maria Silva">
+
+    <label class="anonimo-box">
+
+      <input id="anonimo" type="checkbox">
+
+      Quero permanecer anônimo
+
+    </label>
+
+    <label>Mensagem para o casal (opcional)</label>
+
+    <textarea
+      id="mensagem"
+      maxlength="200"
+      placeholder="Desejamos toda felicidade do mundo ❤️"></textarea>
+
+    <div class="contador">
+      <span id="contador">0</span>/200
+    </div>
+
+    <div class="buttons">
+
+      <button class="secondary" onclick="fechar()">
+        Cancelar
+      </button>
+
+      <button onclick="confirmar()">
+        Confirmar
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
-
-</div>
-
+<div id="toast" class="toast">
+  ❤️ Presente reservado com sucesso!
 </div>
 
 <script src="script.js"></script>
