@@ -8,30 +8,31 @@ let mensagens = [];
 // ------------------------
 // Carrega dados da planilha
 // ------------------------
-async function carregar(){
+async function carregar() {
 
-    const resposta = await fetch(API);
+  const resposta = await fetch(API);
+  const dados = await resposta.json();
 
-    const dados = await resposta.json();
+  // Compatibilidade com as duas versões da API
+  if (Array.isArray(dados)) {
+    presentes = dados;
+    mensagens = [];
+  } else {
+    presentes = dados.presentes || [];
+    mensagens = dados.mensagens || [];
+  }
 
-    presentes = dados.presentes;
-    mensagens = dados.mensagens;
+  presentes.sort((a, b) => {
+    if (a.categoria === b.categoria) {
+      return a.presente.localeCompare(b.presente);
+    }
+    return a.categoria.localeCompare(b.categoria);
+  });
 
-    presentes.sort((a,b)=>{
+  presentesFiltrados = [...presentes];
 
-        if(a.categoria===b.categoria){
-            return a.presente.localeCompare(b.presente);
-        }
-
-        return a.categoria.localeCompare(b.categoria);
-
-    });
-
-    presentesFiltrados=[...presentes];
-
-    desenhar();
-    desenharMensagens();
-
+  desenhar();
+  desenharMensagens();
 }
 
 // ------------------------
