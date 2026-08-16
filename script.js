@@ -189,17 +189,16 @@ async function confirmar() {
     return;
   }
 
+  const payload = {
+    id: Number(selecionado),
+    nome,
+    anonimo,
+    mensagem
+  };
+
   const resposta = await fetch(API, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      id: selecionado,
-      nome: nome,
-      anonimo: anonimo,
-      mensagem: mensagem
-    })
+    body: JSON.stringify(payload)
   });
 
   const resultado = await resposta.json();
@@ -210,7 +209,7 @@ async function confirmar() {
   }
 
   fechar();
-  carregar();
+  await carregar();
   mostrarSucesso();
 }
 
