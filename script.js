@@ -189,26 +189,23 @@ async function confirmar() {
     return;
   }
 
-  const body = new URLSearchParams({
-    id: String(selecionado),
-    nome,
-    anonimo: anonimo ? "SIM" : "NAO",
-    mensagem
-  });
+  const form = new FormData();
+  form.append("id", String(selecionado));
+  form.append("nome", nome);
+  form.append("anonimo", anonimo ? "SIM" : "NAO");
+  form.append("mensagem", mensagem);
 
   await fetch(API, {
     method: "POST",
-    mode: "no-cors",
-    body
+    body: form
   });
 
   fechar();
 
-  // espera a planilha gravar e recarrega
-  setTimeout(async () => {
-    await carregar();
+  setTimeout(() => {
+    carregar();
     mostrarSucesso();
-  }, 700);
+  }, 500);
 }
 
 // ------------------------
