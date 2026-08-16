@@ -185,20 +185,18 @@ async function confirmar() {
   const mensagem = document.getElementById("mensagem").value.trim();
 
   if (!anonimo && nome === "") {
-    alert("Digite seu nome ou marque a opção de anonimato.");
+    alert("Digite seu nome ou marque anonimato.");
     return;
   }
 
-  const url = new URL(API);
-
-  url.searchParams.set("action", "reserve");
-  url.searchParams.set("id", selecionado);
-  url.searchParams.set("nome", nome);
-  url.searchParams.set("anonimo", anonimo ? "SIM" : "NAO");
-  url.searchParams.set("mensagem", mensagem);
-
-  const resposta = await fetch(url.toString(), {
-    method: "GET"
+  const resposta = await fetch(API, {
+    method: "POST",
+    body: JSON.stringify({
+      id: selecionado,
+      nome: nome,
+      anonimo: anonimo,
+      mensagem: mensagem
+    })
   });
 
   const resultado = await resposta.json();
