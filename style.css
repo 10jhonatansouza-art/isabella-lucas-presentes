@@ -448,3 +448,42 @@ z-index:999;
 .toast.show{
 transform:translateX(-50%) translateY(0);
 }
+.wall{
+margin-top:70px;
+padding:40px 0;
+border-top:1px solid var(--line);
+}
+
+.wall-title{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:25px;
+}
+
+.wall-title h2{
+font-family:"Cormorant Garamond",serif;
+font-size:38px;
+color:var(--gold);
+}
+
+.msg-card{
+background:white;
+border-radius:18px;
+padding:22px;
+margin-bottom:14px;
+border:1px solid var(--line);
+box-shadow:0 6px 18px rgba(0,0,0,.04);
+}
+
+.msg-card p{
+font-style:italic;
+line-height:1.7;
+color:#5E5650;
+}
+
+.msg-card strong{
+display:block;
+margin-top:12px;
+color:var(--gold);
+}

@@ -3,23 +3,35 @@ const API = "https://script.google.com/macros/s/AKfycbygrkJlhyTt86s1yKamXg5aL3an
 let presentes = [];
 let presentesFiltrados = [];
 let selecionado = null;
+let mensagens = [];
 
 // ------------------------
 // Carrega dados da planilha
 // ------------------------
-async function carregar() {
-  const resposta = await fetch(API);
-  presentes = await resposta.json();
+async function carregar(){
 
-  presentes.sort((a, b) => {
-    if (a.categoria === b.categoria) {
-      return a.presente.localeCompare(b.presente);
-    }
-    return a.categoria.localeCompare(b.categoria);
-  });
+    const resposta = await fetch(API);
 
-  presentesFiltrados = [...presentes];
-  desenhar();
+    const dados = await resposta.json();
+
+    presentes = dados.presentes;
+    mensagens = dados.mensagens;
+
+    presentes.sort((a,b)=>{
+
+        if(a.categoria===b.categoria){
+            return a.presente.localeCompare(b.presente);
+        }
+
+        return a.categoria.localeCompare(b.categoria);
+
+    });
+
+    presentesFiltrados=[...presentes];
+
+    desenhar();
+    desenharMensagens();
+
 }
 
 // ------------------------
@@ -85,7 +97,39 @@ function desenhar() {
   });
 
 }
+function desenharMensagens(){
 
+const mural=document.getElementById("mural");
+
+mural.innerHTML="";
+
+if(mensagens.length===0){
+
+mural.innerHTML=`
+<div class="msg-card">
+<p>Seja a primeira pessoa a deixar uma mensagem para o casal ❤️</p>
+</div>
+`;
+
+return;
+
+}
+
+mensagens.reverse().forEach(item=>{
+
+mural.innerHTML += `
+<div class="msg-card">
+
+<p>"${item.mensagem}"</p>
+
+<strong>— ${item.nome}</strong>
+
+</div>
+`;
+
+});
+
+}
 // ------------------------
 // Pesquisa
 // ------------------------
