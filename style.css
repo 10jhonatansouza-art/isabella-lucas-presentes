@@ -1,0 +1,101 @@
+
+body{
+    margin:0;
+    font-family:Arial;
+    background:#f6f2ec;
+    color:#333;
+}
+
+header{
+    text-align:center;
+    padding:50px 20px;
+    background:#ece4d8;
+}
+
+header h1{
+    font-size:38px;
+    letter-spacing:3px;
+}
+
+header p{
+    max-width:600px;
+    margin:auto;
+    color:#666;
+}
+
+main{
+    max-width:800px;
+    margin:30px auto;
+    padding:15px;
+}
+
+.categoria{
+    font-size:24px;
+    margin:30px 0 10px;
+    color:#8b6b4a;
+    border-bottom:2px solid #d9c9b8;
+}
+
+.card{
+    background:white;
+    border-radius:12px;
+    padding:15px;
+    margin-bottom:10px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.nome{
+    font-weight:bold;
+}
+
+.reservado .nome{
+    text-decoration:line-through;
+    color:#888;
+}
+
+button{
+    background:#8b6b4a;
+    color:white;
+    border:none;
+    border-radius:8px;
+    padding:10px 16px;
+    cursor:pointer;
+}
+
+button:disabled{
+    background:#c7b8a6;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.4);
+    justify-content:center;
+    align-items:center;
+}
+
+.janela{
+    background:white;
+    padding:25px;
+    border-radius:16px;
+    width:90%;
+    max-width:400px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:15px 0;
+    border-radius:8px;
+    border:1px solid #ddd;
+}
+
+.secundario{
+    background:#ddd;
+    color:#333;
+    margin-top:8px;
+}
