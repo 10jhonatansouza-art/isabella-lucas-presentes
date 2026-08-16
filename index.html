@@ -1,61 +1,115 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Isabella & Lucas</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<title>Isabella & Lucas</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+
 </head>
+
 <body>
 
 <header class="hero">
-  <div class="overlay">
-    <h2>16 • Outubro • 2026</h2>
-    <h1>Isabella & Lucas</h1>
-    <p>Lista de presentes</p>
-    <div id="countdown" class="countdown"></div>
-  </div>
+
+<div class="floral left">❀</div>
+<div class="floral right">❀</div>
+
+<div class="hero-content">
+
+<div class="ornament">✦</div>
+
+<h1>Isabella & Lucas</h1>
+
+<p class="subtitle">
+Lista de Presentes
+</p>
+
+<div class="date">
+16 • Outubro • 2026
+</div>
+
+<div id="countdown" class="countdown"></div>
+
+<p class="message">
+
+Criamos essa lista com muito carinho para dar um direcionamento a quem preferir.
+
+O mais importante para nós é celebrar esse momento com vocês.
+
+</p>
+
+</div>
+
 </header>
+
+<section class="stats">
+
+<div class="stat-card">
+
+<div>
+<span id="livres">0</span>
+<small>Disponíveis</small>
+</div>
+
+<div class="divider"></div>
+
+<div>
+<span id="reservados">0</span>
+<small>Reservados</small>
+</div>
+
+</div>
+
+</section>
 
 <main class="container">
 
-  <div class="stats">
-    <div>
-      <strong id="livres">0</strong>
-      <span>Disponíveis</span>
-    </div>
+<div class="search-box">
 
-    <div>
-      <strong id="reservados">0</strong>
-      <span>Reservados</span>
-    </div>
-  </div>
+<input
+id="busca"
+type="text"
+placeholder="Pesquisar presente..."
+oninput="filtrar()">
 
-  <input
-    id="busca"
-    type="text"
-    placeholder="Pesquisar presente..."
-    oninput="filtrar()">
+</div>
 
-  <div id="lista"></div>
+<div id="lista"></div>
 
 </main>
+
+<footer>
+
+<h3>Com amor, Isabella & Lucas</h3>
+
+<p>Obrigado por fazer parte da nossa história ❤️</p>
+
+</footer>
 
 <div id="modal" class="modal">
 
   <div class="modal-content">
 
     <div class="modal-header">
+
       <span class="mini">🎁 Lista de presentes</span>
+
       <h2>Reservar presente</h2>
+
       <h3 id="presenteSelecionado"></h3>
-      <p>Você pode se identificar ou reservar anonimamente.</p>
+
+      <p>
+        Você pode se identificar ou deixar a reserva anônima.
+      </p>
+
     </div>
 
     <label>Seu nome</label>
@@ -67,19 +121,39 @@
       placeholder="Ex.: Maria Silva">
 
     <label class="anonimo-box">
+
       <input id="anonimo" type="checkbox">
+
       Quero permanecer anônimo
+
     </label>
 
+    <label>Mensagem para o casal (opcional)</label>
+
+    <textarea
+      id="mensagem"
+      maxlength="200"
+      placeholder="Desejamos toda felicidade do mundo ❤️"></textarea>
+
+    <div class="contador">
+      <span id="contador">0</span>/200
+    </div>
+
     <div class="buttons">
-      <button class="secondary" onclick="fechar()">Cancelar</button>
-      <button onclick="confirmar()">Confirmar reserva</button>
+
+      <button class="secondary" onclick="fechar()">
+        Cancelar
+      </button>
+
+      <button onclick="confirmar()">
+        Confirmar
+      </button>
+
     </div>
 
   </div>
 
 </div>
-
 <div id="toast" class="toast">
   ❤️ Presente reservado com sucesso!
 </div>

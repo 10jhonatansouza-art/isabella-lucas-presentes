@@ -1,35 +1,29 @@
-const API="https://script.google.com/macros/s/AKfycbygrkJlhyTt86s1yKamXg5aL3anLXZaxxaAGh0oKkAxZqe23WV1oTjZXEC-lHSKKTRK/exec";
+const API = "https://script.google.com/macros/s/AKfycbygrkJlhyTt86s1yKamXg5aL3anLXZaxxaAGh0oKkAxZqe23WV1oTjZXEC-lHSKKTRK/exec";
 
 let presentes = [];
 let presentesFiltrados = [];
 let selecionado = null;
 
 // ------------------------
-// Carrega dados
+// Carrega dados da planilha
 // ------------------------
 async function carregar() {
-
   const resposta = await fetch(API);
   presentes = await resposta.json();
 
   presentes.sort((a, b) => {
-
     if (a.categoria === b.categoria) {
       return a.presente.localeCompare(b.presente);
     }
-
     return a.categoria.localeCompare(b.categoria);
-
   });
 
   presentesFiltrados = [...presentes];
-
   desenhar();
-
 }
 
 // ------------------------
-// Desenha lista
+// Desenha a página
 // ------------------------
 function desenhar() {
 
@@ -55,19 +49,15 @@ function desenhar() {
       .forEach(item => {
 
         const card = document.createElement("div");
-
-        card.className =
-          item.status === "reservado"
-            ? "card reservado"
-            : "card";
+        card.className = item.status === "reservado"
+          ? "card reservado"
+          : "card";
 
         card.innerHTML = `
           <div class="left-side">
-
             <div class="check"></div>
 
             <div>
-
               <div class="nome">${item.presente}</div>
 
               ${
@@ -77,7 +67,6 @@ function desenhar() {
               }
 
             </div>
-
           </div>
 
           <button
@@ -118,18 +107,20 @@ function filtrar() {
 // ------------------------
 // Modal
 // ------------------------
-function abrir(id) {
+function abrir(id){
 
-  selecionado = id;
+  selecionado=id;
 
-  const item = presentes.find(p => p.id === id);
+  const item=presentes.find(p=>p.id===id);
 
-  document.getElementById("presenteSelecionado").textContent = item.presente;
+  document.getElementById("presenteSelecionado").textContent=item.presente;
 
-  document.getElementById("nome").value = "";
-  document.getElementById("anonimo").checked = false;
+  document.getElementById("nome").value="";
+  document.getElementById("mensagem").value="";
+  document.getElementById("anonimo").checked=false;
+  document.getElementById("contador").textContent="0";
 
-  document.getElementById("modal").style.display = "flex";
+  document.getElementById("modal").style.display="flex";
 
 }
 
@@ -142,59 +133,39 @@ function fechar() {
 // ------------------------
 // Reserva
 // ------------------------
-async function confirmar() {
+async function confirmar(){
 
-  const nome = document.getElementById("nome").value.trim();
-  const anonimo = document.getElementById("anonimo").checked;
+const nome=document.getElementById("nome").value.trim();
 
-  if (!anonimo && nome === "") {
-    alert("Digite seu nome ou marque a opção de anonimato.");
-    return;
-  }
+const anonimo=document.getElementById("anonimo").checked;
 
-  const resposta = await fetch(API, {
-    method: "POST",
-    body: JSON.stringify({
-      id: selecionado,
-      nome: nome,
-      anonimo: anonimo
-    })
-  });
+const mensagem=document.getElementById("mensagem").value.trim();
 
-  const resultado = await resposta.json();
+if(!anonimo && nome===""){
+alert("Digite seu nome ou marque a opção de anonimato.");
+return;
+}
 
-  if (!resultado.ok) {
-    alert(resultado.erro || "Erro ao reservar.");
-    return;
-  }
+await fetch(API,{
+method:"POST",
+body:JSON.stringify({
+id:selecionado,
+nome:nome,
+anonimo:anonimo,
+mensagem:mensagem
+})
+});
 
-  fechar();
+fechar();
 
-  await carregar();
+carregar();
 
-  mostrarSucesso();
+mostrarSucesso();
 
 }
 
 // ------------------------
-// Toast
-// ------------------------
-function mostrarSucesso() {
-
-  const t = document.getElementById("toast");
-
-  t.classList.add("show");
-
-  setTimeout(() => {
-
-    t.classList.remove("show");
-
-  }, 2500);
-
-}
-
-// ------------------------
-// Contagem
+// Contagem regressiva
 // ------------------------
 const casamento = new Date("2026-10-16T00:00:00");
 
@@ -212,5 +183,25 @@ function atualizarContagem() {
 atualizarContagem();
 setInterval(atualizarContagem, 60000);
 
+document.getElementById("mensagem")
+.addEventListener("input",e=>{
+
+document.getElementById("contador").textContent=
+e.target.value.length;
+
+});
+function mostrarSucesso(){
+
+const t=document.getElementById("toast");
+
+t.classList.add("show");
+
+setTimeout(()=>{
+
+t.classList.remove("show");
+
+},3000);
+
+}
 // Inicialização
 carregar();
