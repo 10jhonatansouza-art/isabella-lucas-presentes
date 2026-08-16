@@ -1,4 +1,11 @@
 const API = "https://script.google.com/macros/s/AKfycbx2QDRO0EJYDcvPH_0JJPM8qk-wupvmkJSaDVYhm-8/exec";
+
+document.getElementById("livres").textContent = livres;
+document.getElementById("reservados").textContent = reservados;
+
+let presentes = [];
+let selecionado = null;
+
 const livres = presentes.filter(p => p.status === "disponivel").length;
 const reservados = presentes.length - livres;
 const casamento = new Date("2026-10-16T00:00:00");
@@ -18,13 +25,6 @@ function atualizarContagem() {
 setInterval(atualizarContagem, 1000);
 
 atualizarContagem();
-
-document.getElementById("livres").textContent = livres;
-document.getElementById("reservados").textContent = reservados;
-
-let presentes = [];
-let selecionado = null;
-
 async function carregar() {
     const resposta = await fetch(API);
     presentes = await resposta.json();
@@ -112,6 +112,28 @@ async function confirmar() {
     fechar();
 
     carregar();
+}
+function filtrar(){
+
+    const termo =
+        document.getElementById("busca")
+        .value
+        .toLowerCase();
+
+    document.querySelectorAll(".card").forEach(card=>{
+
+        const nome =
+            card.querySelector(".nome")
+            .innerText
+            .toLowerCase();
+
+        card.style.display =
+            nome.includes(termo)
+            ? "flex"
+            : "none";
+
+    });
+
 }
 
 carregar();
