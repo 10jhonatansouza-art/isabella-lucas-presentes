@@ -189,27 +189,26 @@ async function confirmar() {
     return;
   }
 
-  const body = new URLSearchParams();
-  body.append("id", selecionado);
-  body.append("nome", nome);
-  body.append("anonimo", anonimo ? "SIM" : "NAO");
-  body.append("mensagem", mensagem);
+  const body = new URLSearchParams({
+    id: String(selecionado),
+    nome,
+    anonimo: anonimo ? "SIM" : "NAO",
+    mensagem
+  });
 
-  const resposta = await fetch(API, {
+  await fetch(API, {
     method: "POST",
+    mode: "no-cors",
     body
   });
 
-  const resultado = await resposta.json();
-
-  if (!resultado.ok) {
-    alert(resultado.erro || "Erro ao reservar.");
-    return;
-  }
-
   fechar();
-  await carregar();
-  mostrarSucesso();
+
+  // espera a planilha gravar e recarrega
+  setTimeout(async () => {
+    await carregar();
+    mostrarSucesso();
+  }, 700);
 }
 
 // ------------------------
