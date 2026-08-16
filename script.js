@@ -1,187 +1,216 @@
 const API="https://script.google.com/macros/s/AKfycbygrkJlhyTt86s1yKamXg5aL3anLXZaxxaAGh0oKkAxZqe23WV1oTjZXEC-lHSKKTRK/exec";
 
-let presentes=[];
-let presentesFiltrados=[];
-let selecionado=null;
+let presentes = [];
+let presentesFiltrados = [];
+let selecionado = null;
 
-async function carregar(){
+// ------------------------
+// Carrega dados
+// ------------------------
+async function carregar() {
 
-const r=await fetch(API);
+  const resposta = await fetch(API);
+  presentes = await resposta.json();
 
-presentes=await r.json();
+  presentes.sort((a, b) => {
 
-presentes.sort((a,b)=>{
+    if (a.categoria === b.categoria) {
+      return a.presente.localeCompare(b.presente);
+    }
 
-if(a.categoria===b.categoria)
-return a.presente.localeCompare(b.presente);
+    return a.categoria.localeCompare(b.categoria);
 
-return a.categoria.localeCompare(b.categoria);
+  });
 
-});
+  presentesFiltrados = [...presentes];
 
-presentesFiltrados=[...presentes];
-
-desenhar();
-
-}
-
-function desenhar(){
-
-const lista=document.getElementById("lista");
-
-lista.innerHTML="";
-
-const livres=presentes.filter(i=>i.status==="disponivel").length;
-
-document.getElementById("livres").textContent=livres;
-
-document.getElementById("reservados").textContent=presentes.length-livres;
-
-const categorias=[...new Set(presentesFiltrados.map(i=>i.categoria))];
-
-categorias.forEach(cat=>{
-
-const t=document.createElement("div");
-
-t.className="categoria";
-
-t.textContent=cat;
-
-lista.appendChild(t);
-
-presentesFiltrados
-.filter(i=>i.categoria===cat)
-.forEach(item=>{
-
-const card=document.createElement("div");
-
-card.className=item.status==="reservado"
-?"card reservado":"card";
-
-card.innerHTML=`
-<div>
-
-<div class="nome">${item.presente}</div>
-
-${item.status==="reservado"
-?`<div class="by">Reservado por ${item.nome}</div>`
-:""}
-
-</div>
-
-<button
-${item.status==="reservado"?"disabled":""}
-onclick="abrir(${item.id})">
-
-${item.status==="reservado"?"Reservado":"Escolher"}
-
-</button>
-`;
-
-lista.appendChild(card);
-
-});
-
-});
+  desenhar();
 
 }
 
-function filtrar(){
+// ------------------------
+// Desenha lista
+// ------------------------
+function desenhar() {
 
-const t=document.getElementById("busca").value.toLowerCase();
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
 
-presentesFiltrados=presentes.filter(i=>
-i.presente.toLowerCase().includes(t)
-);
+  const livres = presentes.filter(p => p.status === "disponivel").length;
 
-desenhar();
+  document.getElementById("livres").textContent = livres;
+  document.getElementById("reservados").textContent = presentes.length - livres;
 
-}
+  const categorias = [...new Set(presentesFiltrados.map(p => p.categoria))];
 
-function abrir(id){
+  categorias.forEach(cat => {
 
-selecionado=id;
+    const titulo = document.createElement("div");
+    titulo.className = "categoria";
+    titulo.textContent = cat;
+    lista.appendChild(titulo);
 
-const item=presentes.find(i=>i.id===id);
+    presentesFiltrados
+      .filter(p => p.categoria === cat)
+      .forEach(item => {
 
-document.getElementById("presenteSelecionado").textContent=item.presente;
+        const card = document.createElement("div");
 
-document.getElementById("nome").value="";
+        card.className =
+          item.status === "reservado"
+            ? "card reservado"
+            : "card";
 
-document.getElementById("anonimo").checked=false;
+        card.innerHTML = `
+          <div class="left-side">
 
-document.getElementById("modal").style.display="flex";
+            <div class="check"></div>
 
-}
+            <div>
 
-function fechar(){
+              <div class="nome">${item.presente}</div>
 
-document.getElementById("modal").style.display="none";
+              ${
+                item.status === "reservado"
+                ? `<div class="by">Reservado por ${item.nome}</div>`
+                : ""
+              }
 
-}
+            </div>
 
-async function confirmar(){
+          </div>
 
-const nome=document.getElementById("nome").value.trim();
+          <button
+            ${item.status === "reservado" ? "disabled" : ""}
+            onclick="abrir(${item.id})">
 
-const anonimo=document.getElementById("anonimo").checked;
+            ${item.status === "reservado" ? "Reservado" : "Escolher"}
 
-if(!anonimo && nome===""){
-alert("Digite seu nome ou marque anonimato.");
-return;
-}
+          </button>
+        `;
 
-const resposta=await fetch(API,{
-method:"POST",
-body:JSON.stringify({
-id:selecionado,
-nome,
-anonimo
-})
-});
+        lista.appendChild(card);
 
-const resultado=await resposta.json();
+      });
 
-if(!resultado.ok){
-alert(resultado.erro);
-return;
-}
-
-fechar();
-
-await carregar();
-
-mostrarSucesso();
-
-}
-
-function mostrarSucesso(){
-
-const t=document.getElementById("toast");
-
-t.classList.add("show");
-
-setTimeout(()=>{
-
-t.classList.remove("show");
-
-},2500);
+  });
 
 }
 
-const casamento=new Date("2026-10-16");
+// ------------------------
+// Pesquisa
+// ------------------------
+function filtrar() {
 
-function atualizarContagem(){
+  const termo = document
+    .getElementById("busca")
+    .value
+    .toLowerCase();
 
-const dias=Math.ceil((casamento-new Date())/86400000);
+  presentesFiltrados = presentes.filter(p =>
+    p.presente.toLowerCase().includes(termo)
+  );
 
-document.getElementById("countdown").innerHTML=
-`Faltam <b>${dias}</b> dias para o grande dia`;
+  desenhar();
+
+}
+
+// ------------------------
+// Modal
+// ------------------------
+function abrir(id) {
+
+  selecionado = id;
+
+  const item = presentes.find(p => p.id === id);
+
+  document.getElementById("presenteSelecionado").textContent = item.presente;
+
+  document.getElementById("nome").value = "";
+  document.getElementById("anonimo").checked = false;
+
+  document.getElementById("modal").style.display = "flex";
+
+}
+
+function fechar() {
+
+  document.getElementById("modal").style.display = "none";
+
+}
+
+// ------------------------
+// Reserva
+// ------------------------
+async function confirmar() {
+
+  const nome = document.getElementById("nome").value.trim();
+  const anonimo = document.getElementById("anonimo").checked;
+
+  if (!anonimo && nome === "") {
+    alert("Digite seu nome ou marque a opção de anonimato.");
+    return;
+  }
+
+  const resposta = await fetch(API, {
+    method: "POST",
+    body: JSON.stringify({
+      id: selecionado,
+      nome: nome,
+      anonimo: anonimo
+    })
+  });
+
+  const resultado = await resposta.json();
+
+  if (!resultado.ok) {
+    alert(resultado.erro || "Erro ao reservar.");
+    return;
+  }
+
+  fechar();
+
+  await carregar();
+
+  mostrarSucesso();
+
+}
+
+// ------------------------
+// Toast
+// ------------------------
+function mostrarSucesso() {
+
+  const t = document.getElementById("toast");
+
+  t.classList.add("show");
+
+  setTimeout(() => {
+
+    t.classList.remove("show");
+
+  }, 2500);
+
+}
+
+// ------------------------
+// Contagem
+// ------------------------
+const casamento = new Date("2026-10-16T00:00:00");
+
+function atualizarContagem() {
+
+  const agora = new Date();
+
+  const dias = Math.ceil((casamento - agora) / 86400000);
+
+  document.getElementById("countdown").innerHTML =
+    `Faltam <b>${dias}</b> dias para o grande dia`;
 
 }
 
 atualizarContagem();
+setInterval(atualizarContagem, 60000);
 
-setInterval(atualizarContagem,60000);
-
+// Inicialização
 carregar();

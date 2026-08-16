@@ -1,106 +1,87 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Isabella & Lucas</title>
 
-<title>Isabella & Lucas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="style.css">
-
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="hero">
-
-<div class="overlay">
-
-<h2>16 • Outubro • 2026</h2>
-
-<h1>Isabella & Lucas</h1>
-
-<p>Lista de presentes</p>
-
-<div id="countdown" class="countdown"></div>
-
-</div>
-
+  <div class="overlay">
+    <h2>16 • Outubro • 2026</h2>
+    <h1>Isabella & Lucas</h1>
+    <p>Lista de presentes</p>
+    <div id="countdown" class="countdown"></div>
+  </div>
 </header>
 
 <main class="container">
 
-<div class="stats">
+  <div class="stats">
+    <div>
+      <strong id="livres">0</strong>
+      <span>Disponíveis</span>
+    </div>
 
-<div>
-<strong id="livres">0</strong>
-<span>Disponíveis</span>
-</div>
+    <div>
+      <strong id="reservados">0</strong>
+      <span>Reservados</span>
+    </div>
+  </div>
 
-<div>
-<strong id="reservados">0</strong>
-<span>Reservados</span>
-</div>
+  <input
+    id="busca"
+    type="text"
+    placeholder="Pesquisar presente..."
+    oninput="filtrar()">
 
-</div>
-
-<input
-id="busca"
-type="text"
-placeholder="Pesquisar presente..."
-oninput="filtrar()">
-
-<div id="lista"></div>
+  <div id="lista"></div>
 
 </main>
 
 <div id="modal" class="modal">
 
-<div class="modal-content">
+  <div class="modal-content">
 
-<h2>Reservar presente</h2>
+    <div class="modal-header">
+      <span class="mini">🎁 Lista de presentes</span>
+      <h2>Reservar presente</h2>
+      <h3 id="presenteSelecionado"></h3>
+      <p>Você pode se identificar ou reservar anonimamente.</p>
+    </div>
 
-<h3 id="presenteSelecionado"></h3>
+    <label>Seu nome</label>
 
-<label>Seu nome</label>
+    <input
+      id="nome"
+      type="text"
+      maxlength="60"
+      placeholder="Ex.: Maria Silva">
 
-<input
-id="nome"
-type="text"
-placeholder="Digite seu nome">
+    <label class="anonimo-box">
+      <input id="anonimo" type="checkbox">
+      Quero permanecer anônimo
+    </label>
 
-<label class="anonimo">
+    <div class="buttons">
+      <button class="secondary" onclick="fechar()">Cancelar</button>
+      <button onclick="confirmar()">Confirmar reserva</button>
+    </div>
 
-<input
-id="anonimo"
-type="checkbox">
-
-Reservar como anônimo
-
-</label>
-
-<div class="buttons">
-
-<button class="cancel" onclick="fechar()">
-Cancelar
-</button>
-
-<button onclick="confirmar()">
-Confirmar
-</button>
-
-</div>
-
-</div>
+  </div>
 
 </div>
 
 <div id="toast" class="toast">
-❤️ Presente reservado com sucesso!
+  ❤️ Presente reservado com sucesso!
 </div>
 
 <script src="script.js"></script>
