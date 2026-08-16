@@ -1,116 +1,129 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Isabella & Lucas</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Isabella & Lucas</title>
 
-  <link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-  <section class="hero">
+<header class="hero">
 
-    <div class="ornament">✦</div>
+<div class="floral left">❀</div>
+<div class="floral right">❀</div>
 
-    <h1>Isabella & Lucas</h1>
+<div class="hero-content">
 
-    <p class="subtitle">
-      Lista de Presentes
-    </p>
+<div class="ornament">✦</div>
 
-    <div class="date">
-      16 • Outubro • 2026
-    </div>
-    <div class="countdown" id="countdown"></div>
+<h1>Isabella & Lucas</h1>
 
-    <p class="message">
-      Criamos essa lista com muito carinho para dar um direcionamento a quem preferir.
-      O mais importante para nós é celebrar esse momento ao lado de vocês. ❤️
-    </p>
+<p class="subtitle">
+Lista de Presentes
+</p>
 
-  </section>
+<div class="date">
+16 • Outubro • 2026
+</div>
 
-  <section class="stats">
+<div id="countdown" class="countdown"></div>
 
-    <div class="stat-card">
+<p class="message">
 
-      <div>
-        <span id="livres">0</span>
-        <small>Disponíveis</small>
-      </div>
+Criamos essa lista com muito carinho para dar um direcionamento a quem preferir.
 
-      <div class="divider"></div>
+O mais importante para nós é celebrar esse momento com vocês.
 
-      <div>
-        <span id="reservados">0</span>
-        <small>Reservados</small>
-      </div>
+</p>
 
-    </div>
+</div>
 
-  </section>
+</header>
 
-  <main class="container">
+<section class="stats">
 
-    <div class="search-box">
+<div class="stat-card">
 
-      <input
-        type="text"
-        id="busca"
-        placeholder="Pesquisar presente..."
-        oninput="filtrar()">
+<div>
+<span id="livres">0</span>
+<small>Disponíveis</small>
+</div>
 
-    </div>
+<div class="divider"></div>
 
-    <div id="lista"></div>
+<div>
+<span id="reservados">0</span>
+<small>Reservados</small>
+</div>
 
-  </main>
+</div>
 
-  <footer>
+</section>
 
-    <p>Com amor, Isabella & Lucas</p>
+<main class="container">
 
-    <small>Obrigado por fazer parte da nossa história.</small>
+<div class="search-box">
 
-  </footer>
+<input
+id="busca"
+type="text"
+placeholder="Pesquisar presente..."
+oninput="filtrar()">
 
-  <div id="modal" class="modal">
+</div>
 
-    <div class="modal-content">
+<div id="lista"></div>
 
-      <h2>Reservar presente</h2>
+</main>
 
-      <p id="presenteSelecionado"></p>
+<footer>
 
-      <input
-        id="nome"
-        type="text"
-        placeholder="Digite seu nome">
+<h3>Com amor, Isabella & Lucas</h3>
 
-      <div class="buttons">
+<p>Obrigado por fazer parte da nossa história ❤️</p>
 
-        <button class="secondary" onclick="fechar()">
-          Cancelar
-        </button>
+</footer>
 
-        <button onclick="confirmar()">
-          Confirmar
-        </button>
+<div id="modal" class="modal">
 
-      </div>
+<div class="modal-content">
 
-    </div>
+<h2>Reservar presente</h2>
 
-  </div>
+<p id="presenteSelecionado"></p>
 
-  <script src="script.js"></script>
+<input
+id="nome"
+type="text"
+placeholder="Digite seu nome">
+
+<div class="buttons">
+
+<button class="secondary" onclick="fechar()">
+Cancelar
+</button>
+
+<button onclick="confirmar()">
+Confirmar reserva
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="script.js"></script>
 
 </body>
 </html>

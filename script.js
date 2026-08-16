@@ -1,139 +1,214 @@
-const API = "https://script.google.com/macros/s/AKfycbx2QDRO0EJYDcvPH_0JJPM8qk-wupvmkJSaDVYhm-8/exec";
-
-document.getElementById("livres").textContent = livres;
-document.getElementById("reservados").textContent = reservados;
+const API = "https://script.google.com/macros/s/AKfycbygrkJlhyTt86s1yKamXg5aL3anLXZaxxaAGh0oKkAxZqe23WV1oTjZXEC-lHSKKTRK/exec";
 
 let presentes = [];
+let presentesFiltrados = [];
 let selecionado = null;
 
-const livres = presentes.filter(p => p.status === "disponivel").length;
-const reservados = presentes.length - livres;
-const casamento = new Date("2026-10-16T00:00:00");
+async function carregar(){
 
-function atualizarContagem() {
-
-    const agora = new Date();
-
-    const diff = casamento - agora;
-
-    const dias = Math.ceil(diff / (1000 * 60 * 60 * 24));
-
-    document.getElementById("countdown").innerHTML =
-        `Faltam <b>${dias}</b> dias para o grande dia`;
-}
-
-setInterval(atualizarContagem, 1000);
-
-atualizarContagem();
-async function carregar() {
     const resposta = await fetch(API);
+
     presentes = await resposta.json();
+
+    presentes.sort((a,b)=>{
+
+        if(a.categoria===b.categoria){
+
+            return a.presente.localeCompare(b.presente);
+
+        }
+
+        return a.categoria.localeCompare(b.categoria);
+
+    });
+
+    presentesFiltrados=[...presentes];
+
     desenhar();
+
 }
 
-function desenhar() {
-    const livres = presentes.filter(p => p.status === "disponivel").length;
+function desenhar(){
 
-    document.getElementById("livres").textContent = livres;
-    document.getElementById("reservados").textContent = presentes.length - livres;
-    const lista = document.getElementById("lista");
-    lista.innerHTML = "";
+    const lista=document.getElementById("lista");
 
-    const categorias = [...new Set(presentes.map(p => p.categoria))];
+    lista.innerHTML="";
 
-    categorias.forEach(cat => {
-        lista.innerHTML += `<div class="categoria">${cat}</div>`;
-        presentes.sort((a, b) => {
-            if (a.categoria === b.categoria) {
-                return a.presente.localeCompare(b.presente);
-            }
-            return a.categoria.localeCompare(b.categoria);
-        });
-        presentes
-            .filter(p => p.categoria === cat)
-            .forEach(item => {
-                lista.innerHTML += `
-        <div class="card ${item.status}">
-          <div>
-            <div class="nome">${item.presente}</div>
-            ${item.status === "reservado"
-                        ? `<small>Reservado por ${item.nome}</small>`
-                        : ""
-                    }
-          </div>
+    const livres =
+        presentes.filter(p=>p.status==="disponivel").length;
 
-          <button
-            ${item.status === "reservado" ? "disabled" : ""}
-            onclick="abrir(${item.id})">
+    document.getElementById("livres").textContent=livres;
+    document.getElementById("reservados").textContent=
+        presentes.length-livres;
 
-            ${item.status === "reservado"
+    const categorias=[
+        ...new Set(
+            presentesFiltrados.map(p=>p.categoria)
+        )
+    ];
+
+    categorias.forEach(cat=>{
+
+        const titulo=document.createElement("div");
+        titulo.className="categoria";
+        titulo.textContent=cat;
+
+        lista.appendChild(titulo);
+
+        presentesFiltrados
+        .filter(p=>p.categoria===cat)
+        .forEach(item=>{
+
+            const card=document.createElement("div");
+
+            card.className=
+                "card "+(item.status==="reservado"
+                ? "reservado"
+                : "");
+
+            card.innerHTML=`
+
+                <div class="left-side">
+
+                    <div class="check"></div>
+
+                    <div>
+
+                        <div class="nome">
+                            ${item.presente}
+                        </div>
+
+                        ${
+                            item.status==="reservado"
+                            ? `<div class="by">
+                                Reservado por ${item.nome}
+                               </div>`
+                            : ""
+                        }
+
+                    </div>
+
+                </div>
+
+                <button
+                    ${item.status==="reservado"
+                    ? "disabled"
+                    : ""}
+                    onclick="abrir(${item.id})">
+
+                    ${
+                        item.status==="reservado"
                         ? "Reservado"
                         : "Escolher"
                     }
 
-          </button>
-        </div>`;
-            });
+                </button>
+            `;
+
+            lista.appendChild(card);
+
+        });
+
     });
+
 }
 
-function abrir(id) {
-    selecionado = id;
+function filtrar(){
 
-    const item = presentes.find(p => p.id === id);
+    const termo=
+        document
+        .getElementById("busca")
+        .value
+        .toLowerCase();
 
-    document.getElementById("presenteSelecionado").innerText = item.presente;
-    document.getElementById("modal").style.display = "flex";
+    presentesFiltrados=
+        presentes.filter(p=>
+
+            p.presente
+            .toLowerCase()
+            .includes(termo)
+
+        );
+
+    desenhar();
+
 }
 
-function fechar() {
-    document.getElementById("modal").style.display = "none";
+function abrir(id){
+
+    selecionado=id;
+
+    const item=
+        presentes.find(p=>p.id===id);
+
+    document.getElementById(
+        "presenteSelecionado"
+    ).textContent=item.presente;
+
+    document.getElementById("modal")
+        .style.display="flex";
+
 }
 
-async function confirmar() {
+function fechar(){
 
-    const nome = document.getElementById("nome").value;
+    document.getElementById("modal")
+        .style.display="none";
 
-    if (!nome) {
+}
+
+async function confirmar(){
+
+    const nome=
+        document.getElementById("nome")
+        .value
+        .trim();
+
+    if(nome===""){
+
         alert("Digite seu nome.");
+
         return;
+
     }
 
-    await fetch(API, {
-        method: "POST",
-        body: JSON.stringify({
-            id: selecionado,
-            nome: nome
+    await fetch(API,{
+        method:"POST",
+        body:JSON.stringify({
+            id:selecionado,
+            nome:nome
         })
     });
 
-    document.getElementById("nome").value = "";
+    document.getElementById("nome").value="";
 
     fechar();
 
     carregar();
-}
-function filtrar(){
-
-    const termo =
-        document.getElementById("busca")
-        .value
-        .toLowerCase();
-
-    document.querySelectorAll(".card").forEach(card=>{
-
-        const nome =
-            card.querySelector(".nome")
-            .innerText
-            .toLowerCase();
-
-        card.style.display =
-            nome.includes(termo)
-            ? "flex"
-            : "none";
-
-    });
 
 }
+
+const casamento=
+    new Date("2026-10-16T00:00:00");
+
+function atualizarContagem(){
+
+    const agora=new Date();
+
+    const diff=casamento-agora;
+
+    const dias=
+        Math.ceil(diff/86400000);
+
+    document.getElementById(
+        "countdown"
+    ).innerHTML=
+    `Faltam <b>${dias}</b> dias para o grande dia`;
+
+}
+
+atualizarContagem();
+
+setInterval(atualizarContagem,60000);
 
 carregar();
