@@ -1,242 +1,160 @@
-const API = "https://script.google.com/macros/s/AKfycbygrkJlhyTt86s1yKamXg5aL3anLXZaxxaAGh0oKkAxZqe23WV1oTjZXEC-lHSKKTRK/exec";
+const API="https://script.google.com/macros/s/AKfycbygrkJlhyTt86s1yKamXg5aL3anLXZaxxaAGh0oKkAxZqe23WV1oTjZXEC-lHSKKTRK/exec";
 
-let presentes = [];
-let presentesFiltrados = [];
-let selecionado = null;
-let mensagens = [];
+let presentes=[];
+let presentesFiltrados=[];
+let selecionado=null;
 
-// ------------------------
-// Carrega dados da planilha
-// ------------------------
-async function carregar() {
+async function carregar(){
 
-  const resposta = await fetch(API);
-  const dados = await resposta.json();
+const r=await fetch(API);
 
-  // Compatibilidade com as duas versões da API
-  if (Array.isArray(dados)) {
-    presentes = dados;
-    mensagens = [];
-  } else {
-    presentes = dados.presentes || [];
-    mensagens = dados.mensagens || [];
-  }
+presentes=await r.json();
 
-  presentes.sort((a, b) => {
-    if (a.categoria === b.categoria) {
-      return a.presente.localeCompare(b.presente);
-    }
-    return a.categoria.localeCompare(b.categoria);
-  });
+presentes.sort((a,b)=>{
 
-  presentesFiltrados = [...presentes];
+if(a.categoria===b.categoria)
+return a.presente.localeCompare(b.presente);
 
-  desenhar();
-  desenharMensagens();
-}
+return a.categoria.localeCompare(b.categoria);
 
-// ------------------------
-// Desenha a página
-// ------------------------
-function desenhar() {
+});
 
-  const lista = document.getElementById("lista");
-  lista.innerHTML = "";
+presentesFiltrados=[...presentes];
 
-  const livres = presentes.filter(p => p.status === "disponivel").length;
-
-  document.getElementById("livres").textContent = livres;
-  document.getElementById("reservados").textContent = presentes.length - livres;
-
-  const categorias = [...new Set(presentesFiltrados.map(p => p.categoria))];
-
-  categorias.forEach(cat => {
-
-    const titulo = document.createElement("div");
-    titulo.className = "categoria";
-    titulo.textContent = cat;
-    lista.appendChild(titulo);
-
-    presentesFiltrados
-      .filter(p => p.categoria === cat)
-      .forEach(item => {
-
-        const card = document.createElement("div");
-        card.className = item.status === "reservado"
-          ? "card reservado"
-          : "card";
-
-        card.innerHTML = `
-          <div class="left-side">
-            <div class="check"></div>
-
-            <div>
-              <div class="nome">${item.presente}</div>
-
-              ${
-                item.status === "reservado"
-                ? `<div class="by">Reservado por ${item.nome}</div>`
-                : ""
-              }
-
-            </div>
-          </div>
-
-          <button
-            ${item.status === "reservado" ? "disabled" : ""}
-            onclick="abrir(${item.id})">
-
-            ${item.status === "reservado" ? "Reservado" : "Escolher"}
-
-          </button>
-        `;
-
-        lista.appendChild(card);
-
-      });
-
-  });
-
-}
-function desenharMensagens(){
-
-const mural=document.getElementById("mural");
-
-mural.innerHTML="";
-
-if(mensagens.length===0){
-
-mural.innerHTML=`
-<div class="msg-card">
-<p>Seja a primeira pessoa a deixar uma mensagem para o casal ❤️</p>
-</div>
-`;
-
-return;
+desenhar();
 
 }
 
-mensagens.reverse().forEach(item=>{
+function desenhar(){
 
-mural.innerHTML += `
-<div class="msg-card">
+const lista=document.getElementById("lista");
 
-<p>"${item.mensagem}"</p>
+lista.innerHTML="";
 
-<strong>— ${item.nome}</strong>
+const livres=presentes.filter(i=>i.status==="disponivel").length;
+
+document.getElementById("livres").textContent=livres;
+
+document.getElementById("reservados").textContent=presentes.length-livres;
+
+const categorias=[...new Set(presentesFiltrados.map(i=>i.categoria))];
+
+categorias.forEach(cat=>{
+
+const t=document.createElement("div");
+
+t.className="categoria";
+
+t.textContent=cat;
+
+lista.appendChild(t);
+
+presentesFiltrados
+.filter(i=>i.categoria===cat)
+.forEach(item=>{
+
+const card=document.createElement("div");
+
+card.className=item.status==="reservado"
+?"card reservado":"card";
+
+card.innerHTML=`
+<div>
+
+<div class="nome">${item.presente}</div>
+
+${item.status==="reservado"
+?`<div class="by">Reservado por ${item.nome}</div>`
+:""}
 
 </div>
+
+<button
+${item.status==="reservado"?"disabled":""}
+onclick="abrir(${item.id})">
+
+${item.status==="reservado"?"Reservado":"Escolher"}
+
+</button>
 `;
+
+lista.appendChild(card);
+
+});
 
 });
 
 }
-// ------------------------
-// Pesquisa
-// ------------------------
-function filtrar() {
 
-  const termo = document
-    .getElementById("busca")
-    .value
-    .toLowerCase();
+function filtrar(){
 
-  presentesFiltrados = presentes.filter(p =>
-    p.presente.toLowerCase().includes(termo)
-  );
+const t=document.getElementById("busca").value.toLowerCase();
 
-  desenhar();
+presentesFiltrados=presentes.filter(i=>
+i.presente.toLowerCase().includes(t)
+);
+
+desenhar();
 
 }
 
-// ------------------------
-// Modal
-// ------------------------
 function abrir(id){
 
-  selecionado=id;
+selecionado=id;
 
-  const item=presentes.find(p=>p.id===id);
+const item=presentes.find(i=>i.id===id);
 
-  document.getElementById("presenteSelecionado").textContent=item.presente;
+document.getElementById("presenteSelecionado").textContent=item.presente;
 
-  document.getElementById("nome").value="";
-  document.getElementById("mensagem").value="";
-  document.getElementById("anonimo").checked=false;
-  document.getElementById("contador").textContent="0";
+document.getElementById("nome").value="";
 
-  document.getElementById("modal").style.display="flex";
+document.getElementById("anonimo").checked=false;
 
-}
-
-function fechar() {
-
-  document.getElementById("modal").style.display = "none";
+document.getElementById("modal").style.display="flex";
 
 }
 
-// ------------------------
-// Reserva
-// ------------------------
-async function confirmar() {
+function fechar(){
 
-  const nome = document.getElementById("nome").value.trim();
-  const anonimo = document.getElementById("anonimo").checked;
-  const mensagem = document.getElementById("mensagem").value.trim();
-
-  if (!anonimo && nome === "") {
-    alert("Digite seu nome ou marque anonimato.");
-    return;
-  }
-
-  const resposta = await fetch(API, {
-    method: "POST",
-    body: JSON.stringify({
-      id: selecionado,
-      nome: nome,
-      anonimo: anonimo,
-      mensagem: mensagem
-    })
-  });
-
-  const resultado = await resposta.json();
-
-  if (!resultado.ok) {
-    alert(resultado.erro || "Erro ao reservar.");
-    return;
-  }
-
-  fechar();
-  await carregar();
-  mostrarSucesso();
-}
-
-// ------------------------
-// Contagem regressiva
-// ------------------------
-const casamento = new Date("2026-10-16T00:00:00");
-
-function atualizarContagem() {
-
-  const agora = new Date();
-
-  const dias = Math.ceil((casamento - agora) / 86400000);
-
-  document.getElementById("countdown").innerHTML =
-    `Faltam <b>${dias}</b> dias para o grande dia`;
+document.getElementById("modal").style.display="none";
 
 }
 
-atualizarContagem();
-setInterval(atualizarContagem, 60000);
+async function confirmar(){
 
-document.getElementById("mensagem")
-.addEventListener("input",e=>{
+const nome=document.getElementById("nome").value.trim();
 
-document.getElementById("contador").textContent=
-e.target.value.length;
+const anonimo=document.getElementById("anonimo").checked;
 
+if(!anonimo && nome===""){
+alert("Digite seu nome ou marque anonimato.");
+return;
+}
+
+const resposta=await fetch(API,{
+method:"POST",
+body:JSON.stringify({
+id:selecionado,
+nome,
+anonimo
+})
 });
+
+const resultado=await resposta.json();
+
+if(!resultado.ok){
+alert(resultado.erro);
+return;
+}
+
+fechar();
+
+await carregar();
+
+mostrarSucesso();
+
+}
+
 function mostrarSucesso(){
 
 const t=document.getElementById("toast");
@@ -247,8 +165,23 @@ setTimeout(()=>{
 
 t.classList.remove("show");
 
-},3000);
+},2500);
 
 }
-// Inicialização
+
+const casamento=new Date("2026-10-16");
+
+function atualizarContagem(){
+
+const dias=Math.ceil((casamento-new Date())/86400000);
+
+document.getElementById("countdown").innerHTML=
+`Faltam <b>${dias}</b> dias para o grande dia`;
+
+}
+
+atualizarContagem();
+
+setInterval(atualizarContagem,60000);
+
 carregar();
