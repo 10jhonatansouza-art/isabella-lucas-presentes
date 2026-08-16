@@ -4,211 +4,204 @@ let presentes = [];
 let presentesFiltrados = [];
 let selecionado = null;
 
-async function carregar(){
+// ------------------------
+// Carrega dados da planilha
+// ------------------------
+async function carregar() {
+  const resposta = await fetch(API);
+  presentes = await resposta.json();
 
-    const resposta = await fetch(API);
+  presentes.sort((a, b) => {
+    if (a.categoria === b.categoria) {
+      return a.presente.localeCompare(b.presente);
+    }
+    return a.categoria.localeCompare(b.categoria);
+  });
 
-    presentes = await resposta.json();
+  presentesFiltrados = [...presentes];
+  desenhar();
+}
 
-    presentes.sort((a,b)=>{
+// ------------------------
+// Desenha a página
+// ------------------------
+function desenhar() {
 
-        if(a.categoria===b.categoria){
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
 
-            return a.presente.localeCompare(b.presente);
+  const livres = presentes.filter(p => p.status === "disponivel").length;
 
-        }
+  document.getElementById("livres").textContent = livres;
+  document.getElementById("reservados").textContent = presentes.length - livres;
 
-        return a.categoria.localeCompare(b.categoria);
+  const categorias = [...new Set(presentesFiltrados.map(p => p.categoria))];
 
-    });
+  categorias.forEach(cat => {
 
-    presentesFiltrados=[...presentes];
+    const titulo = document.createElement("div");
+    titulo.className = "categoria";
+    titulo.textContent = cat;
+    lista.appendChild(titulo);
 
-    desenhar();
+    presentesFiltrados
+      .filter(p => p.categoria === cat)
+      .forEach(item => {
+
+        const card = document.createElement("div");
+        card.className = item.status === "reservado"
+          ? "card reservado"
+          : "card";
+
+        card.innerHTML = `
+          <div class="left-side">
+            <div class="check"></div>
+
+            <div>
+              <div class="nome">${item.presente}</div>
+
+              ${
+                item.status === "reservado"
+                ? `<div class="by">Reservado por ${item.nome}</div>`
+                : ""
+              }
+
+            </div>
+          </div>
+
+          <button
+            ${item.status === "reservado" ? "disabled" : ""}
+            onclick="abrir(${item.id})">
+
+            ${item.status === "reservado" ? "Reservado" : "Escolher"}
+
+          </button>
+        `;
+
+        lista.appendChild(card);
+
+      });
+
+  });
 
 }
 
-function desenhar(){
+// ------------------------
+// Pesquisa
+// ------------------------
+function filtrar() {
 
-    const lista=document.getElementById("lista");
+  const termo = document
+    .getElementById("busca")
+    .value
+    .toLowerCase();
 
-    lista.innerHTML="";
+  presentesFiltrados = presentes.filter(p =>
+    p.presente.toLowerCase().includes(termo)
+  );
 
-    const livres =
-        presentes.filter(p=>p.status==="disponivel").length;
-
-    document.getElementById("livres").textContent=livres;
-    document.getElementById("reservados").textContent=
-        presentes.length-livres;
-
-    const categorias=[
-        ...new Set(
-            presentesFiltrados.map(p=>p.categoria)
-        )
-    ];
-
-    categorias.forEach(cat=>{
-
-        const titulo=document.createElement("div");
-        titulo.className="categoria";
-        titulo.textContent=cat;
-
-        lista.appendChild(titulo);
-
-        presentesFiltrados
-        .filter(p=>p.categoria===cat)
-        .forEach(item=>{
-
-            const card=document.createElement("div");
-
-            card.className=
-                "card "+(item.status==="reservado"
-                ? "reservado"
-                : "");
-
-            card.innerHTML=`
-
-                <div class="left-side">
-
-                    <div class="check"></div>
-
-                    <div>
-
-                        <div class="nome">
-                            ${item.presente}
-                        </div>
-
-                        ${
-                            item.status==="reservado"
-                            ? `<div class="by">
-                                Reservado por ${item.nome}
-                               </div>`
-                            : ""
-                        }
-
-                    </div>
-
-                </div>
-
-                <button
-                    ${item.status==="reservado"
-                    ? "disabled"
-                    : ""}
-                    onclick="abrir(${item.id})">
-
-                    ${
-                        item.status==="reservado"
-                        ? "Reservado"
-                        : "Escolher"
-                    }
-
-                </button>
-            `;
-
-            lista.appendChild(card);
-
-        });
-
-    });
+  desenhar();
 
 }
 
-function filtrar(){
-
-    const termo=
-        document
-        .getElementById("busca")
-        .value
-        .toLowerCase();
-
-    presentesFiltrados=
-        presentes.filter(p=>
-
-            p.presente
-            .toLowerCase()
-            .includes(termo)
-
-        );
-
-    desenhar();
-
-}
-
+// ------------------------
+// Modal
+// ------------------------
 function abrir(id){
 
-    selecionado=id;
+  selecionado=id;
 
-    const item=
-        presentes.find(p=>p.id===id);
+  const item=presentes.find(p=>p.id===id);
 
-    document.getElementById(
-        "presenteSelecionado"
-    ).textContent=item.presente;
+  document.getElementById("presenteSelecionado").textContent=item.presente;
 
-    document.getElementById("modal")
-        .style.display="flex";
+  document.getElementById("nome").value="";
+  document.getElementById("mensagem").value="";
+  document.getElementById("anonimo").checked=false;
+  document.getElementById("contador").textContent="0";
 
-}
-
-function fechar(){
-
-    document.getElementById("modal")
-        .style.display="none";
+  document.getElementById("modal").style.display="flex";
 
 }
 
+function fechar() {
+
+  document.getElementById("modal").style.display = "none";
+
+}
+
+// ------------------------
+// Reserva
+// ------------------------
 async function confirmar(){
 
-    const nome=
-        document.getElementById("nome")
-        .value
-        .trim();
+const nome=document.getElementById("nome").value.trim();
 
-    if(nome===""){
+const anonimo=document.getElementById("anonimo").checked;
 
-        alert("Digite seu nome.");
+const mensagem=document.getElementById("mensagem").value.trim();
 
-        return;
+if(!anonimo && nome===""){
+alert("Digite seu nome ou marque a opção de anonimato.");
+return;
+}
 
-    }
+await fetch(API,{
+method:"POST",
+body:JSON.stringify({
+id:selecionado,
+nome:nome,
+anonimo:anonimo,
+mensagem:mensagem
+})
+});
 
-    await fetch(API,{
-        method:"POST",
-        body:JSON.stringify({
-            id:selecionado,
-            nome:nome
-        })
-    });
+fechar();
 
-    document.getElementById("nome").value="";
+carregar();
 
-    fechar();
-
-    carregar();
+mostrarSucesso();
 
 }
 
-const casamento=
-    new Date("2026-10-16T00:00:00");
+// ------------------------
+// Contagem regressiva
+// ------------------------
+const casamento = new Date("2026-10-16T00:00:00");
 
-function atualizarContagem(){
+function atualizarContagem() {
 
-    const agora=new Date();
+  const agora = new Date();
 
-    const diff=casamento-agora;
+  const dias = Math.ceil((casamento - agora) / 86400000);
 
-    const dias=
-        Math.ceil(diff/86400000);
-
-    document.getElementById(
-        "countdown"
-    ).innerHTML=
+  document.getElementById("countdown").innerHTML =
     `Faltam <b>${dias}</b> dias para o grande dia`;
 
 }
 
 atualizarContagem();
+setInterval(atualizarContagem, 60000);
 
-setInterval(atualizarContagem,60000);
+document.getElementById("mensagem")
+.addEventListener("input",e=>{
 
+document.getElementById("contador").textContent=
+e.target.value.length;
+
+});
+function mostrarSucesso(){
+
+const t=document.getElementById("toast");
+
+t.classList.add("show");
+
+setTimeout(()=>{
+
+t.classList.remove("show");
+
+},3000);
+
+}
+// Inicialização
 carregar();
