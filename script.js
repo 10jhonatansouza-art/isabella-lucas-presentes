@@ -158,7 +158,8 @@ async function confirmar(){
   }
 
   fechar();
-  carregar();
+  await carregar();
+  mostrarSucesso();
 
 }
 // ------------------------
@@ -179,14 +180,6 @@ function atualizarContagem() {
 
 atualizarContagem();
 setInterval(atualizarContagem, 60000);
-
-document.getElementById("mensagem")
-.addEventListener("input",e=>{
-
-document.getElementById("contador").textContent=
-e.target.value.length;
-
-});
 function mostrarSucesso(){
 
 const t=document.getElementById("toast");
