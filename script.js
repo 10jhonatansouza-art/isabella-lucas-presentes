@@ -185,7 +185,7 @@ async function confirmar() {
   const mensagem = document.getElementById("mensagem").value.trim();
 
   if (!anonimo && nome === "") {
-    alert("Digite seu nome ou marque anonimato.");
+    alert("Digite seu nome ou marque a opção de anonimato.");
     return;
   }
 
@@ -197,11 +197,14 @@ async function confirmar() {
   url.searchParams.set("anonimo", anonimo ? "SIM" : "NAO");
   url.searchParams.set("mensagem", mensagem);
 
-  const resposta = await fetch(url);
+  const resposta = await fetch(url.toString(), {
+    method: "GET"
+  });
+
   const resultado = await resposta.json();
 
   if (!resultado.ok) {
-    alert(resultado.erro);
+    alert(resultado.erro || "Erro ao reservar.");
     return;
   }
 
